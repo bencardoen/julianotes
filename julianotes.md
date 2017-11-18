@@ -39,29 +39,29 @@ julia> ?<name>
 ```
 
 ##### Introspection
-```
+```Julia
 julia> typeof(obj)
 ```
 ##### Type system
 Conversion isn't as loose as in C[++]. E.g. bool->int is legal, the reverse is not.
 
 Conversion
-```
+```Julia
 julia> oftype(x,y) : converts y to type of x
 ```
 Alias
-```
+```Julia
 julia> typealias newname oldname
 ```
 
 Parametric typing : use {T}
 e.g.
-```
+```Julia
 m = Array{Int64,1} # 1 dimensional array of 64 bit signed int
 typeof(Array(Int64, 1)) == Vector{Int64} # true
 ```
 Note expression{T} is a Type, not a value.
-```
+```Julia
 Array(Int64, 1) == Vector{Int64} # false, lhs is not a type but an object
 ```
 
@@ -69,7 +69,7 @@ Numeric types:
 Bool, Int{x}, Float{x} where x is [8,16,32,64], Complex{basetype}
 
 Numeric operations
-```
+```Julia
 julia> x = 5
 julia> y = 7
 julia> (3x + 5y) / y^2
@@ -83,12 +83,12 @@ julia> (y)(x+y) # Error (parsing precedence)
 
 *{next|prev}float(x)*
 
-```
+```Julia
 julia> 1.1 + 0.1 # 1.200002
 julia> with_rounding(Type, Mode) do <code> end # Default is Float64, RoundNearest
 ```
 *Big{Int|Float}*
-```
+```Julia
 julia> b = BigInt(value)
 julia> b = parse(BigInt,"123")
 ```
@@ -97,7 +97,7 @@ julia> b = parse(BigInt,"123")
 *===* Tests if @lhs == @rhs
 
 Strings
-```
+```Julia
 julia> s = "42, surely? Or what do you think?"
 # split(s[, delimiter] )
 julia> s.replace(s, <orig>, <new> )
@@ -108,14 +108,14 @@ julia> match(<pattern>, <string> )
 # pattern is of the form r"<regex>"
 ```
 Hierarchy
-```
+```Julia
 julia> Int64 <= Real # true
 ```
 Define a method for the abstract type as a fallback function.
 
 Defining types
 
-```
+```Julia
 julia> type <name> end #  <name> should follow CamelCase
 julia> n = <name>() # Default constructor is defined by env
 type MyType
@@ -128,7 +128,7 @@ julia> m = MyType(1,2,3)
 julia> m.a = 7
 ```
 Parametric types
-```
+```Julia
 type B{T <: Number} # Accepts any subtype T of Number (<: S is optional)
   a::T
 end
@@ -138,18 +138,18 @@ julia> r = B(7) #
 Note : fieldnames(<obj>) results in field names of object.
 
 Singleton:
-```
+```Julia
 type Singleton
 end
 ```
 Only one such an object can exist, all are references to this one object.
-```
+```Julia
 julia> s = Singleton()
 julia> q = Singleton()
 julia> q===s
 ```
 Immutable
-```
+```Julia
 immutable Im
   field
   list
@@ -161,19 +161,19 @@ julia> im.list[1] = 5 # legal
 Note: immutable objects are copied (pass by value, mutables are pass by reference)
 
 Abstract types
-```
+```Julia
 abstract Â«nameÂ» <: Â«supertypeÂ»
 ```
 
 
 Const
-```
+```Julia
 julia> const x = 7
 julia> x = 9 # triggers a warning "redefining constant"
 ```
 
 global
-```
+```Julia
 julia> x = 9 # implied global
 function f()
     x = 8 # shadowing x, x here is a new variable, and local
@@ -184,18 +184,18 @@ end
 ```
 ##### Tuples
 Similar to Python
-```
+```Julia
 julia> m = "a", "b" # equiv to m=("a", "b")
 julia> f, s = m # unpacking is supported
 ```
 
 ##### Arrays
-```
+```Julia
 julia> m = [10, "10", true]
 julia> m[1]
 ```
 This is an Any-typed array. It's not legal to modify an array with an object not matching the expected type.
-```
+```Julia
 julia> m = [1,2,3] # flat array (contrast with [1 2 3] which is a 1x3)
 julia> m[1] = false # converts to 0
 julia> m[1] = "false" # Error
@@ -207,7 +207,7 @@ julia> m = [1;2;3;4] # NOT an 4x1 vector, flat array (4 element array)
 julia> m = [1 2 3 4]' # Transpose of 1x4 = 4x1 array
 ```
 Indices start from __1__
-```
+```Julia
 julia> m = [1 2; 3 4]
 julia> m[1] == 1
 julia> m[1, 1] == 1
@@ -217,7 +217,7 @@ julia> m[b] == [1;4]
 julia> m[2:3] = 42 # [1 42; 42; 4]
 ```
 Operations
-```
+```Julia
 julia> pop!(m) # ! indicated mutating method
 julia> length(m) # all elements
 julia> push!(m, 1)
@@ -225,7 +225,7 @@ julia> sort(m, rev=true) # reverse sorted copy of m
 # Others include {max|min}imum , mean, std, var
 ```
 Multidimensional (Vector = 1 dim, Matrix is n)
-```
+```Julia
 julia> m = ones(2,3,4)
 # 3 dimensional array of ones
 julia> s = size(m)
@@ -240,7 +240,7 @@ julia> b = b[:] # slice copy, destroys view gives original array
 julia> b = squeeze(b, dim)[:] #
 ```
 Matrix Operations
-```
+```Julia
 julia> c = [1 0 ; 0 1]
 julia> e = c' # transpose
 julia> i = inv(c)
@@ -259,14 +259,14 @@ julia> a[a.>0] # get all elements larger than zero
 julia> log(a) # vectorized log of a, element wise, equal to [log(x) for x in a]
 ```
 Linear algebra
-```
+```Julia
 julia> {det|trace|eigvals|rank}(A)
 ```
 
 _end_ keyword in a sequence reference last element
 
 ###### Dicts
-```
+```Julia
 julia> a = Dict(key => value [, key => value])
 julia> a[key] # gets value
 for d in a
@@ -274,7 +274,7 @@ for d in a
 end
 ```
 Mutating is done by accessor
-```
+```Julia
 for d in keys(a)
     a[d] = <newvalue>
 end
@@ -283,7 +283,7 @@ Iterating over a and modifying pair in place will lead to an error.
 
 ##### Control flow
 ###### For
-```
+```Julia
 for <vname> in begin:end
     <operate on vname>
 end
@@ -302,7 +302,7 @@ end
 # results in 11, 12, 13, 21, 22, 23
 ```
 ###### While
-```
+```Julia
 while <condition>
     < body >
     # break, continue allowed
@@ -310,15 +310,15 @@ end
 ```
 
 ###### Exceptions
-```
+```Julia
 julia> throw(<exception instance>) # raise Except
 julia>
 ```
 Info/Logging
-```
+```Julia
 julia> {info|warning|error}("z") # error raises error and logs.
 ```
-```
+```Julia
 try
 <stmts>
 [catch [excp] # first symbol after catch is name exception, if anonymous use ;
@@ -331,7 +331,7 @@ end
 ```
 ###### Compound expressions
 Idea : have a series of expressions executed, the result of the last is returned (as in C)
-```
+```Julia
 julia> a =begin
           x=1+2
           y=3
@@ -339,14 +339,14 @@ julia> a =begin
         end
 ```
 Or single line variant
-```
+```Julia
 julia> a = (x=1+2; y=3; x-y)
 julia> a = begin x=1+2; y=3; x-y end
 ```
 ###### Coroutines
 Producer : f - object that calls produce(value)
 Consumer : f - object that calls consume(Task)
-```
+```Julia
 function exprod()
     produce("first")
     for n=1:10
@@ -356,7 +356,7 @@ function exprod()
 end
 ```
 
-```
+```Julia
 julia> p = Task(exprod)
 julia> consume(p)
 julia> for x in p
@@ -368,7 +368,7 @@ These not 12 invocations of the function with a clear function stack frame, but 
 Without catch, the statement resolves to nothing.
 
 Task expects a function without parameters, to give a producer parameters use :
-```
+```Julia
 function paramtask(arg)
 <stmts>
 end
@@ -382,7 +382,7 @@ Note : start julia with *julia -p <processcount>* or in a notebook *addprocs<pro
 Other means of controlling cluster : *rmprocs*, *workers* (list of pids), *nworkers()* returns process count, *procs(int)* list of pids registered for physical id=intm *procs(SharedArray)* pids sharing array, *procs* list of pids
 Based on remote reference (Future, RemoteChannel) and remote call. Remote call returns a Future, extract value by (fetch() or wait() for immediate retrieval).
 
-```
+```Julia
 julia> f = remotecall(<callable>, processindex (1...), arg1, arg2, ...)
 # f.id, f.v (value), f.whence (called by), f.where (executed at)
 julia> fetch(f) # get value
@@ -401,14 +401,14 @@ end
 f = remotecall_fetch(()->x, 2)
 ```
 # Take care not to move data when not needed (obvious, but still)
-```
+```Julia
 a = [x for x in 1:100 ] # local variable a in process 1
 f = @spawn mean(a) # moves a to process 2 (or other), then calculates result
 f2 = @spawn mean([x for x in 1:100]) # array is created on process2 and processed there, eliding copy
 ```
 
 Parallel computation
-```
+```Julia
 # Parallel for
 # [<name> =] @parallel <operator> for <range expression>
 #     <expression> # Value of expression is argument to operator
@@ -440,7 +440,7 @@ end
 Use @parallel for for large counts of small time consuming function calls. (e.g. summing array)
 Use pmap for expensive (item wise) function calls)
 
-```
+```Julia
 # Parallel Map
 # pmap(<function>, object)
 M = Matrix{Float64}[rand(1000,1000) for i=1:10] # A 10 element matrix where each element is a 1000x1000 random matrix
@@ -450,7 +450,7 @@ a=pmap(svd, M)
 
 A channel is more powerful, writeable exchange.
 
-```
+```Julia
 @everywhere function removeprocs()
     for n in procs()
         if n>1
@@ -476,7 +476,7 @@ end
 removeprocs()
 ```
 
-```
+```Julia
 # Example from the docs showing that colluding writes/reads will lead to performance regression
 # This function returns the (irange,jrange) indexes assigned to this worker
 @everywhere function myrange(q::SharedArray)
@@ -525,7 +525,7 @@ end
 ```
 
 Shared data (arrays)
-```
+```Julia
 addprocs(4)
 # Create a shared array, 3x4, initialize with process index, localindexes splits indices over range.
 # init=<function>, where function = f(S::SharedArray)
@@ -537,10 +537,10 @@ removeprocs()
 Note : ! races if any item is shared
 
 ###### Threads (experimental)
-```
+```Julia
 export JULIA_NUM_THREADS=4
 ```
-```
+```Julia
 Threads.nthreads() # see ^
 a = zeros(10)
 Threads.:threads for i = 1:10
@@ -550,7 +550,7 @@ end
 Results in a initialized by 4 threads, without races.
 
 ##### Functions
-```
+```Julia
 function <name>(<args>)
   <body>
   [return [value]]
@@ -559,22 +559,22 @@ end
 _nothing_ is eq to void (C), None(Python)
 
 Shorthand Functions
-```
+```Julia
 julia> f(x) = x^2
 julia> x-> x^2
 ```
 Use unnamed functions (l's)
-```
+```Julia
 julia> map(x->x^2, collection) #use map if result is needed
 julia> foreach(f, c) #call f on each in c, discard value
 ```
 Arguments: same rules as in Python.
-```
+```Julia
 function f(first, second; third=named, fourth[::Type]=named )
 function f(x; keywords...) # slow
 ```
 Multiple dispatch
-```
+```Julia
 julia> @which <functioncall> # returns exact method being executed
 ```
 Method is function with certain set of arguments.
@@ -585,7 +585,7 @@ Multiple dispatch : with statement f(S, T), lookup methods of f matching S,T.
 If none is found, match super(S), super(T)
 
 Defining typed Functions
-```
+```Julia
 function f(x::Int64)
     println("Integer 64 version called")
 end
@@ -597,7 +597,7 @@ f("abc") # calls generic version
 f(42) # calls Int64 version
 ```
 ##### IO
-```
+```Julia
 julia> f = open(<fname>, mode) # mode is w,r
 julia> write(f, <content>)
 julia> readall(f)
@@ -605,13 +605,13 @@ julia> for q in eachline(f) println(q) end
 ```
 
 ##### Iterators
-```
+```Julia
 julia> a = Dict(1=>2, 2=>1)
 julia> q = collect(keys(a))
 ```
 Collect transforms iterator to collection.
 
-```
+```Julia
 julia> a = [1,2,3]
 julia> s=start(a) # starting iterator state
 julia> next(a, s) # (current element, next iter)
@@ -627,26 +627,26 @@ julia> countfrom(start, step) # infinite series
 ```
 
 
-```
+```Julia
 julia> a= [1,2,3]
 julia> b = [3,4,5]
 julia> c, d, e = zip(a,b)
 ```
 List comprehension (pythonic)
-```
+```Julia
 julia> a = [1,2,3]
 julia> b = [i for i in a if i % 2 == 0]
 ```
 
 ##### Collections
-```
+```Julia
 isempty(c)
 empty!(c) # clear c
 length(c)
 endof(c) -> last index
 ```
 Membership test
-```
+```Julia
 2 in a# compares by == for lists,isequal on key for dictitems
 2 in keys(a) # dicts
 haskey(a, 2) #
@@ -654,7 +654,7 @@ eltype(a)
 findin(a, b) #indices of a in b
 ```
 Operations
-```
+```Julia
 unique(iter[, dim]) # returns unique set in iter, in order of passing
 reduce(op, neutral, iter) #neutral is neutral element operator (if empty), op is binary associative operator
 extrema(a) # min, max
@@ -672,7 +672,7 @@ Bitwise : &, |, ~ (watch out for signedness UInt8 != Int8)
 
 ##### Performance
 Fully specifying type enhances performance
-```
+```Julia
 julia> x = [rand() for x in 1:1e5]
 function f(x)
     s = 0
@@ -691,7 +691,7 @@ julia> @time g(x) # Could be faster, but only if Julia isn't already able to inf
 julia> x = Any[rand() for x in 1:1e5] #
 julia> g(x) # Calls method with generic parameters. No type inference can be made, so no optimizations possible.
 ```
-```
+```Julia
 type B
      a # Impossible to infer typeof(a)
 end
@@ -700,7 +700,7 @@ Since the type of a can only be known at runtime, performance degrades. If a's T
 
 If B is genericly typed with T, and field a as well, all depends on T. If T is an Abstract type, explicit, then it can still change at runtime
 (e.g Int64 v Int32 as subtypes of Numeric).
-```
+```Julia
 type B{T <: Number}
     a::T
 end
@@ -708,7 +708,7 @@ julia> b = B{Int64}(43) # typeof(b.a is Int64), type is set not by value at runt
 ```
 
 Inspecting generated code
-```
+```Julia
 function f(x)
     x+=1
 code_llvm(f,(B{Int64},))
@@ -726,11 +726,11 @@ Promote inlining by splitting aggregate function into smaller functions.
 
 Use zero(), one() to create type stable expressions
 
-```
+```Julia
 a = x < 0 ? zero(x) : x # x is Any Typed, so without zero(x) this expression can return 2 types
 ```
 Similar, avoid type changing of variables
-```
+```Julia
 julia> x = 8 # Int64
 julia> x = x/5 # Float64
 ```
