@@ -573,6 +573,11 @@ Arguments: same rules as in Python.
 function f(first, second; third=named, fourth[::Type]=named )
 function f(x; keywords...) # slow
 ```
+**Note** A default argument does not imply a keyword argument. Scoping rules for keyword arguments are local (in argument space) whereas for defaults they are left to right
+```Julia
+function f(first, second=3; third=named)
+```
+
 Multiple dispatch
 ```Julia
 julia> @which <functioncall> # returns exact method being executed
