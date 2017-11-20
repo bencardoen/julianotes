@@ -28,6 +28,7 @@ julia>;netstat -tulpna
 ##### Package management
 ```Julia
 julia> Pkg.add("pname")
+julia> Pkg.clone("repo.jl")
 julia> Pkg.update()
 julia> using pname # eq to from x import *
 julia> import <packagename>: <name>
@@ -44,6 +45,11 @@ julia> typeof(obj)
 ```
 ##### Type system
 Conversion isn't as loose as in C[++]. E.g. bool->int is legal, the reverse is not.
+
+```Julia
+julia>if (1) # Not Legal
+julia>if (Bool(1)) # Legal
+```
 
 Conversion
 ```Julia
@@ -76,6 +82,7 @@ julia> (3x + 5y) / y^2
 julia> +(x,y)
 julia> (x+y)y # legal
 julia> (y)(x+y) # Error (parsing precedence)
+julia> x += 1 # NOT in place, so x may even change type
 ```
 *type{min|max}* provides range of types.
 
@@ -137,6 +144,8 @@ julia> r = B(7) #
 ```
 Note : fieldnames(<obj>) results in field names of object.
 
+** // indicates Rational Number**
+
 Singleton:
 ```Julia
 type Singleton
@@ -171,6 +180,7 @@ Const
 julia> const x = 7
 julia> x = 9 # triggers a warning "redefining constant"
 ```
+##### Scoping
 
 global
 ```Julia
@@ -182,6 +192,30 @@ function f()
     # NOTE : once 'global x' is used, there is no more shadowing, e.g. a line x = 42 later on will still reference global x
 end
 ```
+local
+```Julia
+function f()
+    i = 0
+    for j= 1:10
+      local i
+      i = 7
+    end
+end
+```
+
+```Julia
+julia>x = 0
+julia>[ x for x in 1:3] # newly allocated x
+julia>x == 0 # True
+```
+```Julia
+julia>i=0
+julia>for i = 1:3 # Not new i, reused i
+      end
+julia>i==3 #True // Same leaking as with Python
+```
+**Closures inherit scope of parent (lexical).**
+
 ##### Tuples
 Similar to Python
 ```Julia
@@ -233,7 +267,7 @@ julia> s = size(m)
 julia> s = ndims(m) # dimensions
 julia> i = indices(m) # or indices(m, dim)
 # returns tuple of valid indices (Base.OneTo(last)) element
-julia> m[i:j] # slicing (returns (i,j) inclusive)
+julia> m[i:j] # slicing (returns [i,j] inclusive)
 julia> m = [1,2,3,4]
 julia> b = reshape(m,2,2) # b is a 2x2 representation of a, if you modify either you modify both
 julia> b = b[:] # slice copy, destroys view gives original array
@@ -306,6 +340,16 @@ end
 while <condition>
     < body >
     # break, continue allowed
+end
+```
+
+###### If
+Not a new scope !!
+```Julia
+if <condition>
+    < body >
+[elsif <condition>]
+[else]
 end
 ```
 
@@ -551,12 +595,16 @@ Results in a initialized by 4 threads, without races.
 
 ##### Functions
 ```Julia
-function <name>(<args>)
+function[!] <name>(<args>)
   <body>
   [return [value]]
 end
 ```
 _nothing_ is eq to void (C), None(Python)
+
+**!** Denotes that f is mutating on the arguments, without it arguments are read only. E.g.. for a list this does not mean that the elements can't be changed, only that the object can't be changed.
+
+**Return** Is optional, the last expression of the function body is the return value by default, return can be used for more cases.
 
 Shorthand Functions
 ```Julia
@@ -601,6 +649,12 @@ end
 f("abc") # calls generic version
 f(42) # calls Int64 version
 ```
+**Vectorization**
+```Julia
+sin.(cos.([1,2,3]))
+```
+<f>. = vectorize f on argument, that is,
+
 ##### IO
 ```Julia
 julia> f = open(<fname>, mode) # mode is w,r
@@ -667,7 +721,9 @@ ind{min|max}(a)
 find{min|max}(iter) # value, index
 foreach(f, c) # apply f for x in c, discarding result
 map(f, c) # get result of f on each c
-map!(f,c) #inplace
+map!(f,result, iterable) # apply f on iterable storing in result
+mapreduce(f, op, neutral, iter) # reduce( op(neutral, f(iter)) )
+broadcast(f, l, r) # Used when you apply f(l, r) but l and r are not same dimensions (e.g. vector + matrix), without consuming more memory
 ```
 
 ##### Logic
