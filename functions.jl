@@ -15,6 +15,20 @@ function fibonacci(n, c)
     end
 end
 
-c = Dict()
-fibonacci(20, c)
-print(c)
+# c = Dict()
+# fibonacci(20, c)
+# print(c)
+
+
+function gcd(m, n)
+    if n == 0
+        return m
+    end
+    if m < n
+        return gcd(n, m)
+    end
+    return gcd(n, m % n)
+end
+
+
+print(gcd(13, 7))
