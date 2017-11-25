@@ -690,6 +690,7 @@ julia> countfrom(start, step) # infinite series
 julia> a= [1,2,3]
 julia> b = [3,4,5]
 julia> c, d, e = zip(a,b)
+julia> b1, b2, b3 = b... # Unzip
 ```
 List comprehension (pythonic)
 ```Julia
