@@ -712,6 +712,7 @@ Membership test
 haskey(a, 2) #
 eltype(a)
 findin(a, b) #indices of a in b
+collect(a) # equivalent of a.items()
 ```
 Operations
 ```Julia
