@@ -728,6 +728,24 @@ mapreduce(f, op, neutral, iter) # reduce( op(neutral, f(iter)) )
 broadcast(f, l, r) # Used when you apply f(l, r) but l and r are not same dimensions (e.g. vector + matrix), without consuming more memory
 ```
 
+###### Use case : list of tuples to tuple of lists
+```Julia
+function unzip(lst)
+    Nt = length(lst[1])
+    lsts = [[] for _ in 1:Nt]
+    for el in lst
+        for index in 1:Nt
+            push!(lsts[index],el[index])
+        end
+    end
+    return lsts
+end
+
+function unzipr(lst)
+    return reduce( ([],[]), lst) do x,y; for i in 1:length(y) push!(x[i], y[i]) end;x;end;
+end
+```
+
 ##### Logic
 Logical and/or/not  (bool only) : &&, ||, !
 Bitwise : &, |, ~ (watch out for signedness UInt8 != Int8)
