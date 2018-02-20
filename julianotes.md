@@ -83,6 +83,7 @@ julia> +(x,y)
 julia> (x+y)y # legal
 julia> (y)(x+y) # Error (parsing precedence)
 julia> x += 1 # NOT in place, so x may even change type
+julia> x .+ 2 # in place
 ```
 *type{min|max}* provides range of types.
 
